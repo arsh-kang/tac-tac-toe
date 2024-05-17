@@ -1,6 +1,7 @@
 import turtle
 
-def gamedone(gamestate):
+def boardFull(gamestate):
+    #if theres a 2 anywhere that means that space is empty
     for i in range(3):
         for j in range(3):
             if(gamestate[i][j] == 2):
@@ -27,14 +28,32 @@ def ifwon(player, gamestate):
         return True
     
     return gamestate[0][2] == gamestate[1][1] and gamestate[1][1] == gamestate[2][0] and gamestate[1][1] == player
+
+
+#figures out if computer can win and returns the cell that it needs to play, returns -1 if it cant
+def canWin(gamestate, player):
+    for i in range(9):
+        if(gamestate[i // 3][i % 3] == 2):
+            gamestate[i // 3][i % 3] = player
+
+            if(ifwon(player, gamestate)):
+                gamestate[i // 3][i % 3] = 2
+                return i
+            
+            gamestate[i // 3][i % 3] = 2
+    
+    return -1
+    
+
     
 
 
 def drawX(row, col, height, width, turt):
-    x = width * col / 3- width / 3
+    x = width * col / 3- width / 3 
     y = -1 * (height * row / 3 - height / 3)
 
     turt.penup()
+    turt.pencolor("blue")
     turt.goto(x,y)
     turt.right(45)
     turt.pendown()
@@ -49,6 +68,17 @@ def drawX(row, col, height, width, turt):
     turt.right(180)
     turt.forward(300)
     turt.setheading(90)
+
+def drawO(row, col, height, width, t):
+    x = width * col / 3 - width / 3 + 125
+    y = (-1 * (height * row / 3 - height / 3))
+
+    t.penup()
+    t.goto(x,y)
+    t.pencolor("red")
+    t.pendown()
+    t.circle(125)
+    
     
 
 
@@ -87,7 +117,7 @@ t.forward(w)
 gamestate = [[2,2,2],[2,2,2],[2,2,2]]
 winner = False
 
-while(not gamedone(gamestate) and not winner):
+while(not boardFull(gamestate) and not winner):
     print("==========PLAYER 1 TURN==========")
     x = int(input("Which cell will you select: ")) - 1
 
@@ -101,7 +131,29 @@ while(not gamedone(gamestate) and not winner):
 
     if(not winner):
         print("==========COMPUTER TURN==========")
+        win = canWin(gamestate, 0)
+
+        if(win > -1):
+            gamestate[win // 3][win % 3] = 0
+            drawO(win // 3, win % 3, h, w, t)
+        else:
+            loss = canWin(gamestate, 1)
+
+            if(loss > -1):
+                gamestate[loss // 3][loss % 3] = 0
+                drawO(loss // 3, loss % 3, h, w, t)
+
+            if(gamestate[1][1] == 2):
+                gamestate[1][1] = 0
+                drawO(1,1,h,w,t)
     else:
         print("Player 1 Wins!")
 
+    if(ifwon(0, gamestate)):
+        winner = True
+        print("Computer Wins!")
 
+done = 0
+
+while(done == 0):
+    done = input("Finished?: ")
