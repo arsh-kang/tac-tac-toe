@@ -25,7 +25,7 @@ def ifwon(player, gamestate, draw = False):
     for j in range(3):
         if(gamestate[0][j] == gamestate[1][j] and gamestate[1][j] == gamestate[2][j] and gamestate[0][j] == player):
             if(draw):
-                drawVertLine(player, i)
+                drawVertLine(player, j)
             return True
         
     #check diags
@@ -57,8 +57,9 @@ def canWin(gamestate, player):
 
     
 
-
+#draws an X in a specified box and is scaled according to the screen size
 def drawX(row, col, height, width, turt):
+    #x and y are the coordinates for the middle of the X
     x = width * col / 3- width / 3 
     y = -1 * (height * row / 3 - height / 3)
 
@@ -79,7 +80,9 @@ def drawX(row, col, height, width, turt):
     turt.forward(height / 3)
     turt.setheading(90)
 
+#draws an circle in a specified box and is scaled according to the screen size
 def drawO(row, col, height, width, t):
+    #x and y are the coordinates for the right most part of the circle
     x = width * col / 3 - width / 3 + height / 7
     y = (-1 * (height * row / 3 - height / 3))
 
@@ -107,7 +110,22 @@ def drawHorzLine(player, row):
     t.width(1)
 
 def drawVertLine(player, col):
-    x = 1
+    x = col * w - w
+
+    t.width(4)
+    if(player == 1):
+        t.pencolor("blue")
+    else:
+        t.pencolor("red")
+    
+    t.speed(2)
+    t.penup()
+    t.goto(x, -1*h/2)
+    t.setheading(270)
+    t.pendown()
+    t.forward(h)
+    t.width(1)
+    t.setheading(0)
 
 def drawDiagLine(player, diag):
     x = 1
@@ -115,7 +133,6 @@ def drawDiagLine(player, diag):
 
 def drawBoard():
     t.speed(100)
-    t.ht()
     t.penup()
     t.goto(-1*w/2 + w/3,h/2)
     t.pendown()
@@ -146,6 +163,7 @@ s = turtle.Screen()
 s.setup(w, h)
 t = turtle.Turtle()
 turtle.title("Tic-Tac-Toe")
+t.ht()
 done = 0
 
 
